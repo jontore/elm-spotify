@@ -22,6 +22,7 @@ getBestNewAlbums = function * (next) {
       var reviewEl$ = $(reviewEl);
       return {
         url: reviewEl$.find('.album-link').attr('href'),
+        image: reviewEl$.find('.album-link img').attr('src'),
         artist: reviewEl$.find('.album-artist .artist-list').text(),
         album: reviewEl$.find('.review .album-artist .title').text()
       }
