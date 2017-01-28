@@ -1,1 +1,1 @@
-web: cd srv; npm start
+web: npm start
