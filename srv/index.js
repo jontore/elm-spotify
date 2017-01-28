@@ -1,14 +1,16 @@
 'use strict';
-var getBestNewAlbums = require('./pitchfork').default;
-var logger = require('koa-logger');
-var route = require('koa-route');
-var cors = require('koa-cors');
-var koa = require('koa');
-var app = module.exports = koa();
+let getBestNewAlbums = require('./pitchfork').default;
+let logger = require('koa-logger');
+let route = require('koa-route');
+let cors = require('koa-cors');
+let serve = require('koa-static');
+let koa = require('koa');
+let app = module.exports = koa();
 
 // Logger
 app.use(logger());
 app.use(cors());
+app.use(serve('build'));
 
 console.log(getBestNewAlbums);
 app.use(route.get('/best_albums/', getBestNewAlbums));

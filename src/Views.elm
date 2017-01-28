@@ -8,16 +8,18 @@ import Models exposing (..)
 
 
 renderAlbum: SpotifyResult -> Html Msg
-renderAlbum album = li [] [
-    h3 [] [
+renderAlbum album = li [ class "album" ] [
+    h3 [class "album-title"] [
       text "Review: "
       , text album.artist
     ]
-    , p [ class "Album" ] [
+    , img [class "album-img", src album.image] []
+    , p [] [
         text " "
-        , img [src album.image] []
         , text album.album
-        , text " uri: "
+    ]
+    , p [] [
+        text " uri: "
         , text album.open
     ]
   ]
@@ -25,7 +27,10 @@ renderAlbum album = li [] [
 view : Model -> Html Msg
 view model =
   div [] [
-    h2 [] [text "Best albums"]
+    h1 [ class "title"] [
+      text "Best new albums from "
+      , a [href "http://pitchfork.com/reviews/best/albums/"] [ text "Pitchfork" ]
+    ]
     , br [] []
-    , ul [] (List.map renderAlbum model.albums)
+    , ul [ class "albums" ] (List.map renderAlbum model.albums)
   ]

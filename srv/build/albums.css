@@ -1,0 +1,46 @@
+body {
+  background-color: #EFEFEF;
+  font-family: Helvetice Neu, Arial;
+}
+
+.title {
+  font-family: Prisma, Helvetice Neu;
+  letter-spacing: 5px;
+  text-align: center;
+  font-size: 35px;
+}
+
+.albums {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.album {
+  display: inline-block;
+  text-align: center;
+  height: 400px;
+  width: 400px;
+  border: 4px solid;
+  border-top-color: #ab2020;
+  border-right-color: #ab2020;
+  margin-bottom: 20px;
+}
+
+.album:first-child {
+  margin-left: 20px;
+}
+
+.album-title {
+  font-family: Prisma, Helvetice Neu;
+  letter-spacing: 5px;
+}
+
+.album-img {
+  width: 200px;
+  height: 200px;
+}
+
+.album + .album {
+  margin-left: 20px;
+}
