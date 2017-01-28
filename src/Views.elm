@@ -10,8 +10,7 @@ import Models exposing (..)
 renderAlbum: SpotifyResult -> Html Msg
 renderAlbum album = li [ class "album" ] [
     h3 [class "album-title"] [
-      text "Review: "
-      , text album.artist
+      text album.artist
     ]
     , img [class "album-img", src album.image] []
     , p [] [
@@ -19,8 +18,7 @@ renderAlbum album = li [ class "album" ] [
         , text album.album
     ]
     , p [] [
-        text " uri: "
-        , text album.open
+        a [ href album.open, class "album-open"] [ text "Open"]
     ]
   ]
 

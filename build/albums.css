@@ -56,6 +56,23 @@ body {
   border-left-color: #ab2020;
 }
 
+.album-open {
+  color: #ab2020;
+  font-size: 18px;
+  border-top: 4px solid;
+  border-top-color: black;
+  text-decoration: none;
+}
+
+.album:nth-child(odd) .album-open {
+  border-top-color: #ab2020;
+  color: black;
+}
+
+.album-open:visited {
+  color: #CCC;
+}
+
 .album + .album {
   margin-left: 20px;
 }

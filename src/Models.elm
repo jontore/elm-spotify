@@ -84,4 +84,4 @@ decodeSpotifyAlbum =
     (at ["artists"] (index 0 (at ["name"] string)))
     (at ["name"] string)
     (at ["images"] (index 0 (at ["url"] string)))
-    (at ["uri"] string)
+    (at ["external_urls", "spotify"] string)

@@ -9140,8 +9140,12 @@ var _user$project$Models$decodeSpotifyAlbum = A6(
 		_elm_lang$core$Json_Decode$at,
 		{
 			ctor: '::',
-			_0: 'uri',
-			_1: {ctor: '[]'}
+			_0: 'external_urls',
+			_1: {
+				ctor: '::',
+				_0: 'spotify',
+				_1: {ctor: '[]'}
+			}
 		},
 		_elm_lang$core$Json_Decode$string));
 var _user$project$Models$decodeSpotifySearch = A2(
@@ -9220,12 +9224,8 @@ var _user$project$Views$renderAlbum = function (album) {
 				},
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html$text('Review: '),
-					_1: {
-						ctor: '::',
-						_0: _elm_lang$html$Html$text(album.artist),
-						_1: {ctor: '[]'}
-					}
+					_0: _elm_lang$html$Html$text(album.artist),
+					_1: {ctor: '[]'}
 				}),
 			_1: {
 				ctor: '::',
@@ -9262,12 +9262,23 @@ var _user$project$Views$renderAlbum = function (album) {
 							{ctor: '[]'},
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html$text(' uri: '),
-								_1: {
-									ctor: '::',
-									_0: _elm_lang$html$Html$text(album.open),
-									_1: {ctor: '[]'}
-								}
+								_0: A2(
+									_elm_lang$html$Html$a,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$href(album.open),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$class('album-open'),
+											_1: {ctor: '[]'}
+										}
+									},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('Open'),
+										_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
 							}),
 						_1: {ctor: '[]'}
 					}
