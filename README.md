@@ -1,4 +1,4 @@
-# elm-spotify
+# elm-spotify app [forkify](http://forkify.apps.internetandipa.com/)
 A elm application getting the best new albums from pitchfork and finding them in spotify
 
 # Client app
