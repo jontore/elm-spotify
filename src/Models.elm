@@ -1,23 +1,15 @@
-import Html exposing (..)
-import Html.Attributes exposing (..)
+module Models exposing (..)
+
 import Html.Events exposing (..)
 import Json.Decode exposing (..)
 import Debug exposing (..)
 
 import Http
 
-
-main =
-  Html.program
-    { init = init "cats"
-    , view = view
-    , update = update
-    , subscriptions = subscriptions
-    }
-
-
-
--- MODEL
+type Msg
+  = Refresh
+  | NewBestAlbums (Result Http.Error (List Review))
+  | NewSpotifySearch (Result Http.Error (List SpotifyResult))
 
 type alias Model =
   {
@@ -45,69 +37,6 @@ init topic =
   ( Model [] []
   , getBestAlbums
   )
-
-
--- UPDATE
-
-
-type Msg
-  = Refresh
-  | NewBestAlbums (Result Http.Error (List Review))
-  | NewSpotifySearch (Result Http.Error (List SpotifyResult))
-
-
-update : Msg -> Model -> (Model, Cmd Msg)
-update msg model =
-  case msg of
-   Refresh ->
-     (model, getBestAlbums)
-   NewBestAlbums (Ok reviews) ->
-     (Model reviews [], getSpotifyAlbums reviews)
-
-   NewBestAlbums (Err _) ->
-     (model, Cmd.none)
-
-   NewSpotifySearch (Ok r) ->
-     ((log "model" Model model.reviews (List.concat [model.albums, r])), Cmd.none)
-
-   NewSpotifySearch (Err e) ->
-     (log (toString e) model, Cmd.none)
-
-
-
-
--- VIEW
-renderAlbum: SpotifyResult -> Html Msg
-renderAlbum album = li [] [
-    h3 [] [
-      text "Review: "
-      , text album.artist
-    ]
-    , p [] [
-        text " "
-        , img [src album.image] []
-        , text album.album
-        , text " uri: "
-        , text album.open
-    ]
-  ]
-
-view : Model -> Html Msg
-view model =
-  div []
-    [ h2 [] [text "Best albums"]
-    , br [] []
-    , ul [] (List.map renderAlbum model.albums)
-    ]
-
-
-
--- SUBSCRIPTIONS
-
-
-subscriptions : Model -> Sub Msg
-subscriptions model =
-  Sub.none
 
 -- HTTP
 
