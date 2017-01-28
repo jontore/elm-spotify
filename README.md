@@ -14,7 +14,7 @@ elm install
 
 ```
   elm-make src/Main.elm --output app.js
-  cp index.html app.js albums.css srv/build
+  cp index.html app.js albums.css build
 ```
 
 ## Develop

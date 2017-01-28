@@ -45,7 +45,7 @@ getBestAlbums: Cmd Msg
 getBestAlbums =
   let
     url =
-      "http://localhost:1337/best_albums/"
+      "./best_albums/"
   in
     Http.send NewBestAlbums (Http.get url decodeReviews)
 

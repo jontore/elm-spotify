@@ -9183,7 +9183,7 @@ var _user$project$Models$NewBestAlbums = function (a) {
 	return {ctor: 'NewBestAlbums', _0: a};
 };
 var _user$project$Models$getBestAlbums = function () {
-	var url = 'http://localhost:1337/best_albums/';
+	var url = './best_albums/';
 	return A2(
 		_elm_lang$http$Http$send,
 		_user$project$Models$NewBestAlbums,
