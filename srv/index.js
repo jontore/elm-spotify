@@ -16,6 +16,6 @@ console.log(getBestNewAlbums);
 app.use(route.get('/best_albums/', getBestNewAlbums));
 
 if (!module.parent) {
-  app.listen(1337);
-  console.log('listening on port 1337');
+  app.listen(process.env.PORT || 3000);
+  console.log('listening on port 3000');
 }
