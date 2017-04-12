@@ -1,3 +1,8 @@
+@font-face {
+    font-family: "Prisma";
+    src: url("./Prisma.otf");
+}
+
 body {
   background-color: #EFEFEF;
   font-family: Helvetice Neu, Arial;
@@ -46,6 +51,7 @@ body {
 .album-title {
   font-family: Prisma, Helvetice Neu;
   letter-spacing: 5px;
+  font-size: 26px;
 }
 
 .album-img {
