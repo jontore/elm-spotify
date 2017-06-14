@@ -9166,7 +9166,7 @@ var _user$project$Models$NewSpotifySearch = function (a) {
 var _user$project$Models$getSpotifyAlbum = function (review) {
 	var url = A2(
 		_elm_lang$core$Basics_ops['++'],
-		'https://api.spotify.com/v1/search?type=album&q=album:',
+		'https://api.spotify.com/v1/search?type=album&limit=1&q=album:',
 		A2(
 			_elm_lang$core$Basics_ops['++'],
 			_elm_lang$http$Http$encodeUri(review.album),

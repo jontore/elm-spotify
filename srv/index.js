@@ -12,8 +12,10 @@ app.use(logger());
 app.use(cors());
 app.use(serve('build'));
 
-console.log(getBestNewAlbums);
 app.use(route.get('/best_albums/', getBestNewAlbums));
+app.use(route.get('/*', function * (next) {
+
+}));
 
 if (!module.parent) {
   app.listen(process.env.PORT || 3000);

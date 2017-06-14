@@ -22,13 +22,40 @@ renderAlbum album = li [ class "album" ] [
     ]
   ]
 
-view : Model -> Html Msg
+view: Model -> Html Msg
 view model =
   div [] [
+    header model
+    , br [] []
+    , page model
+  ]
+
+header: Model -> Html Msg
+header model =
     h1 [ class "title"] [
       text "Best new albums from "
       , a [href "http://pitchfork.com/reviews/best/albums/"] [ text "Pitchfork" ]
     ]
-    , br [] []
-    , ul [ class "albums" ] (List.map renderAlbum model.albums)
-  ]
+
+page: Model -> Html Msg
+page model =
+    let
+      route = model.route
+      token = model.token
+    in
+      if String.isEmpty(token) then
+          loginPage model
+      else
+          case model.route of
+              ListRoute -> albumsPage model
+              NotFoundRoute -> text "Not Found"
+              _ -> text "callback"
+
+
+albumsPage: Model -> Html Msg
+albumsPage model =
+    ul [ class "albums" ] (List.map renderAlbum model.albums)
+
+loginPage: Model -> Html Msg
+loginPage model =
+  button [onClick Authenticate ] [ text "Login to Spotify" ]
