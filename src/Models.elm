@@ -5,16 +5,28 @@ import Json.Decode exposing (..)
 import Debug exposing (..)
 
 import Http
+import Navigation
+
 
 type Msg
   = Refresh
+  | Authenticate
+  | OnLocationChange Navigation.Location
   | NewBestAlbums (Result Http.Error (List Review))
   | NewSpotifySearch (Result Http.Error (List SpotifyResult))
+
+type Route
+    = ListRoute
+    | AuthenticateRoute
+    | NotFoundRoute
+    | RootRoute
 
 type alias Model =
   {
       reviews: List Review
     , albums: List SpotifyResult
+    , route: Route
+    , token: Token
   }
 
 type alias Review =
@@ -32,34 +44,58 @@ type alias SpotifyResult =
     open: String
   }
 
-init : String -> (Model, Cmd Msg)
-init topic =
-  ( Model [] []
-  , getBestAlbums
-  )
+type alias Token = String
+
+initialModel : Route -> Token -> Model
+initialModel route token = Model [] [] route token
+
+clientId : String
+clientId = "e777ac1ca10f4f7e9786f73bf4d0267c"
+
+redirectUri : String
+-- redirectUri = "http://forkify.apps.internetandipa.com/callback/"
+redirectUri = "http://localhost:8000/callback/"
 
 -- HTTP
 
+authenticate: Cmd Msg
+authenticate =
+  let
+    url = ("https://accounts.spotify.com/authorize?client_id=" ++ clientId ++ "&redirect_uri=" ++ Http.encodeUri(redirectUri) ++ "&scope=user-read-private%20user-read-email&response_type=token&state=123")
+  in
+      Navigation.load url
 
 getBestAlbums: Cmd Msg
 getBestAlbums =
   let
     url =
-      "./best_albums/"
+      "http://localhost:3000/best_albums/"
   in
     Http.send NewBestAlbums (Http.get url decodeReviews)
 
 
-getSpotifyAlbums: (List Review) -> Cmd Msg
-getSpotifyAlbums reviews =
-  Cmd.batch (List.map getSpotifyAlbum reviews)
+getSpotifyAlbums: (List Review) -> Token -> Cmd Msg
+getSpotifyAlbums reviews token =
+  Cmd.batch (List.map (\a -> getSpotifyAlbum a token) reviews)
 
-getSpotifyAlbum: Review -> Cmd Msg
-getSpotifyAlbum review =
+getSpotifyAlbum: Review -> Token -> Cmd Msg
+getSpotifyAlbum review token =
     let
       url = ("https://api.spotify.com/v1/search?type=album&q=album:" ++ Http.encodeUri(review.album) ++ "%20artist:" ++ Http.encodeUri(review.artist))
     in
-        Http.send NewSpotifySearch (Http.get url decodeSpotifySearch)
+        Http.send NewSpotifySearch (getSpotify url token decodeSpotifySearch)
+
+getSpotify : String -> Token -> Decoder (List SpotifyResult) ->  Http.Request (List SpotifyResult)
+getSpotify url token decoder =
+    Http.request
+        { method = "GET"
+        , headers = [Http.header "Authorization" ("Bearer " ++ token)]
+        , url = url
+        , body = Http.emptyBody
+        , expect = Http.expectJson decoder
+        , timeout = Nothing
+        , withCredentials = False
+        }
 
 decodeReviews : Decoder (List Review)
 decodeReviews =
