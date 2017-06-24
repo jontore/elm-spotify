@@ -32,6 +32,25 @@ body {
   text-align: center;
 }
 
+.login-button {
+    display: block;
+    text-align: center;
+
+    margin: auto;
+    margin-top: 40%;
+    font-size: 28px;
+
+    min-width: 50%;
+    padding: 20px;
+    border: 4px solid;
+
+    color: white;
+    background-color: black;
+
+    border-top-color: #ab2020;
+    border-right-color: #ab2020;
+}
+
 .album {
   display: inline-block;
   text-align: center;

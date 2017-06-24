@@ -53,8 +53,8 @@ clientId : String
 clientId = "e777ac1ca10f4f7e9786f73bf4d0267c"
 
 redirectUri : String
--- redirectUri = "http://forkify.apps.internetandipa.com/callback/"
-redirectUri = "http://localhost:8000/callback/"
+redirectUri = "http://forkify.apps.internetandipa.com/callback/"
+-- redirectUri = "http://localhost:8000/callback/"
 
 -- HTTP
 
