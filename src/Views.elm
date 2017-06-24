@@ -58,4 +58,4 @@ albumsPage model =
 
 loginPage: Model -> Html Msg
 loginPage model =
-  button [onClick Authenticate ] [ text "Login to Spotify" ]
+  button [ class "login-button", onClick Authenticate ] [ text "Login and search" ]
