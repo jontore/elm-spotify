@@ -21,7 +21,7 @@
     "koa-send": "^4.1.0",
     "koa-static": "^2.0.0",
     "pitchfork": "0.0.12",
-    "superagent": "^3.3.2",
+    "superagent": "^3.5.2",
     "thunkify": "^2.1.2"
   },
   "devDependencies": {}
