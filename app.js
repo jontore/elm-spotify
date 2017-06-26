@@ -10239,19 +10239,44 @@ var _user$project$Models$ListRoute = {ctor: 'ListRoute'};
 
 var _user$project$Views$loginPage = function (model) {
 	return A2(
-		_elm_lang$html$Html$button,
+		_elm_lang$html$Html$div,
 		{
 			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('login-button'),
-			_1: {
-				ctor: '::',
-				_0: _elm_lang$html$Html_Events$onClick(_user$project$Models$Authenticate),
-				_1: {ctor: '[]'}
-			}
+			_0: _elm_lang$html$Html_Attributes$class('center-container'),
+			_1: {ctor: '[]'}
 		},
 		{
 			ctor: '::',
-			_0: _elm_lang$html$Html$text('Login and search'),
+			_0: A2(
+				_elm_lang$html$Html$button,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('login-button'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Events$onClick(_user$project$Models$Authenticate),
+						_1: {ctor: '[]'}
+					}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Login and search'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$Views$loadigPage = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('center-container'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text('loading....'),
 			_1: {ctor: '[]'}
 		});
 };
@@ -10388,7 +10413,7 @@ var _user$project$Views$page = function (model) {
 			case 'NotFoundRoute':
 				return _elm_lang$html$Html$text('Not Found');
 			default:
-				return _elm_lang$html$Html$text('callback');
+				return _user$project$Views$loadigPage(model);
 		}
 	}
 };
