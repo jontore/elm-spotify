@@ -49,13 +49,23 @@ page model =
           case model.route of
               ListRoute -> albumsPage model
               NotFoundRoute -> text "Not Found"
-              _ -> text "callback"
+              _ -> loadigPage model
 
 
 albumsPage: Model -> Html Msg
 albumsPage model =
     ul [ class "albums" ] (List.map renderAlbum model.albums)
 
+
+loadigPage: Model -> Html Msg
+loadigPage model =
+  div [ class "center-container" ] [
+    text "loading...."
+  ]
+
+
 loginPage: Model -> Html Msg
 loginPage model =
-  button [ class "login-button", onClick Authenticate ] [ text "Login and search" ]
+  div [ class "center-container" ] [
+    button [ class "login-button", onClick Authenticate ] [ text "Login and search" ]
+  ]
