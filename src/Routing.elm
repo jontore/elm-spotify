@@ -1,7 +1,10 @@
 module Routing exposing (..)
 
 import Array
+import Dict
 import Navigation exposing (Location)
+import Navigation.Router as Router
+import Navigation.Builder as Builder
 import Models exposing (..)
 import UrlParser exposing (..)
 import Regex exposing (..)
@@ -42,10 +45,23 @@ parseLocation location =
           Nothing ->
               (NotFoundRoute, token)
 
-getCommandForRoute: Route -> Token -> Cmd Msg
-getCommandForRoute route token =
-  case route of
-    NotFoundRoute ->
-        Cmd.none
-    _ ->
-      if String.isEmpty(token) then Cmd.none else getBestAlbums
+getCommandForRoute: Location -> Route -> Token -> Cmd Msg
+getCommandForRoute location route token =
+  let
+    model = Router.init location
+    (_, urlChangeCmd) = Router.urlChanged model resetQuery
+  in
+    case route of
+      NotFoundRoute ->
+          Cmd.none
+      _ ->
+        if String.isEmpty(token) then Cmd.none else Cmd.batch [getBestAlbums, urlChangeCmd]
+
+
+resetQuery : Maybe Router.UrlChange
+resetQuery =
+    let
+        pathBuilder = Builder.builder
+            |> Builder.replaceQuery (Dict.empty)
+    in
+        Just <| Builder.toUrlChange pathBuilder
