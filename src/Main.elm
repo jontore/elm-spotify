@@ -26,7 +26,7 @@ init location =
         (currentRoute, token) =
             Routing.parseLocation location
     in
-        ( (initialModel currentRoute token), (getCommandForRoute currentRoute token) )
+        ( (initialModel currentRoute token), (getCommandForRoute location currentRoute token) )
 
 
 -- UPDATE
@@ -39,9 +39,11 @@ update msg model =
    OnLocationChange (location) ->
      let
        (newRoute, newToken) = parseLocation location
-       cmd = getCommandForRoute newRoute newToken
+       oldToken = model.token
+       token = if String.isEmpty(newToken) then oldToken else newToken
+       cmd = getCommandForRoute location newRoute token
      in
-       ( { model | route = newRoute, token = (Debug.log "token" newToken) }, Cmd.none )
+       ( { model | route = newRoute, token = token }, Cmd.none )
    Authenticate ->
      (model, authenticate)
    NewBestAlbums (Ok newReviews) ->

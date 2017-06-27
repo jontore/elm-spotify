@@ -10013,6 +10013,803 @@ var _evancz$url_parser$UrlParser$intParam = function (name) {
 	return A2(_evancz$url_parser$UrlParser$customParam, name, _evancz$url_parser$UrlParser$intParamHelp);
 };
 
+var _sporto$erl$Erl$appendPathSegments = F2(
+	function (segments, url) {
+		var newPath = A2(_elm_lang$core$List$append, url.path, segments);
+		return _elm_lang$core$Native_Utils.update(
+			url,
+			{path: newPath});
+	});
+var _sporto$erl$Erl$removeQuery = F2(
+	function (key, url) {
+		var updated = A2(_elm_lang$core$Dict$remove, key, url.query);
+		return _elm_lang$core$Native_Utils.update(
+			url,
+			{query: updated});
+	});
+var _sporto$erl$Erl$setQuery = F3(
+	function (key, val, url) {
+		var updated = A2(_elm_lang$core$Dict$singleton, key, val);
+		return _elm_lang$core$Native_Utils.update(
+			url,
+			{query: updated});
+	});
+var _sporto$erl$Erl$addQuery = F3(
+	function (key, val, url) {
+		var updated = _elm_lang$core$String$isEmpty(val) ? A2(_elm_lang$core$Dict$remove, key, url.query) : A3(_elm_lang$core$Dict$insert, key, val, url.query);
+		return _elm_lang$core$Native_Utils.update(
+			url,
+			{query: updated});
+	});
+var _sporto$erl$Erl$clearQuery = function (url) {
+	return _elm_lang$core$Native_Utils.update(
+		url,
+		{query: _elm_lang$core$Dict$empty});
+};
+var _sporto$erl$Erl$new = {
+	protocol: '',
+	username: '',
+	password: '',
+	host: {ctor: '[]'},
+	path: {ctor: '[]'},
+	hasLeadingSlash: false,
+	hasTrailingSlash: false,
+	port_: 0,
+	hash: '',
+	query: _elm_lang$core$Dict$empty
+};
+var _sporto$erl$Erl$hashToString = function (url) {
+	return _elm_lang$core$String$isEmpty(url.hash) ? '' : A2(_elm_lang$core$Basics_ops['++'], '#', url.hash);
+};
+var _sporto$erl$Erl$trailingSlashComponent = function (url) {
+	return _elm_lang$core$Native_Utils.eq(url.hasTrailingSlash, true) ? '/' : '';
+};
+var _sporto$erl$Erl$portComponent = function (url) {
+	var _p0 = url.port_;
+	switch (_p0) {
+		case 0:
+			return '';
+		case 80:
+			return '';
+		default:
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				':',
+				_elm_lang$core$Basics$toString(url.port_));
+	}
+};
+var _sporto$erl$Erl$hostComponent = function (url) {
+	return _elm_lang$http$Http$encodeUri(
+		A2(_elm_lang$core$String$join, '.', url.host));
+};
+var _sporto$erl$Erl$pathComponent = function (url) {
+	var leadingSlash = ((!_elm_lang$core$Native_Utils.eq(
+		_sporto$erl$Erl$hostComponent(url),
+		'')) || url.hasLeadingSlash) ? '/' : '';
+	var encoded = A2(_elm_lang$core$List$map, _elm_lang$http$Http$encodeUri, url.path);
+	return _elm_lang$core$Native_Utils.eq(
+		_elm_lang$core$List$length(url.path),
+		0) ? '' : A2(
+		_elm_lang$core$Basics_ops['++'],
+		leadingSlash,
+		A2(_elm_lang$core$String$join, '/', encoded));
+};
+var _sporto$erl$Erl$protocolComponent = function (url) {
+	var _p1 = url.protocol;
+	if (_p1 === '') {
+		return '';
+	} else {
+		return A2(_elm_lang$core$Basics_ops['++'], url.protocol, '://');
+	}
+};
+var _sporto$erl$Erl$queryToString = function (url) {
+	var tuples = _elm_lang$core$Dict$toList(url.query);
+	var encodedTuples = A2(
+		_elm_lang$core$List$map,
+		function (_p2) {
+			var _p3 = _p2;
+			return {
+				ctor: '_Tuple2',
+				_0: _elm_lang$http$Http$encodeUri(_p3._0),
+				_1: _elm_lang$http$Http$encodeUri(_p3._1)
+			};
+		},
+		tuples);
+	var parts = A2(
+		_elm_lang$core$List$map,
+		function (_p4) {
+			var _p5 = _p4;
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				_p5._0,
+				A2(_elm_lang$core$Basics_ops['++'], '=', _p5._1));
+		},
+		encodedTuples);
+	return _elm_lang$core$Dict$isEmpty(url.query) ? '' : A2(
+		_elm_lang$core$Basics_ops['++'],
+		'?',
+		A2(_elm_lang$core$String$join, '&', parts));
+};
+var _sporto$erl$Erl$toString = function (url) {
+	var hash = _sporto$erl$Erl$hashToString(url);
+	var query_ = _sporto$erl$Erl$queryToString(url);
+	var trailingSlash_ = _sporto$erl$Erl$trailingSlashComponent(url);
+	var path_ = _sporto$erl$Erl$pathComponent(url);
+	var port_ = _sporto$erl$Erl$portComponent(url);
+	var host_ = _sporto$erl$Erl$hostComponent(url);
+	var protocol_ = _sporto$erl$Erl$protocolComponent(url);
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		protocol_,
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			host_,
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				port_,
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					path_,
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						trailingSlash_,
+						A2(_elm_lang$core$Basics_ops['++'], query_, hash))))));
+};
+var _sporto$erl$Erl$queryStringElementToTuple = function (element) {
+	var splitted = A2(_elm_lang$core$String$split, '=', element);
+	var first = A2(
+		_elm_lang$core$Maybe$withDefault,
+		'',
+		_elm_lang$core$List$head(splitted));
+	var firstDecoded = A2(
+		_elm_lang$core$Maybe$withDefault,
+		'',
+		_elm_lang$http$Http$decodeUri(first));
+	var second = A2(
+		_elm_lang$core$Maybe$withDefault,
+		'',
+		_elm_lang$core$List$head(
+			A2(_elm_lang$core$List$drop, 1, splitted)));
+	var secondDecoded = A2(
+		_elm_lang$core$Maybe$withDefault,
+		'',
+		_elm_lang$http$Http$decodeUri(second));
+	return {ctor: '_Tuple2', _0: firstDecoded, _1: secondDecoded};
+};
+var _sporto$erl$Erl$queryTuples = function (queryString) {
+	var splitted = A2(_elm_lang$core$String$split, '&', queryString);
+	return _elm_lang$core$String$isEmpty(queryString) ? {ctor: '[]'} : A2(_elm_lang$core$List$map, _sporto$erl$Erl$queryStringElementToTuple, splitted);
+};
+var _sporto$erl$Erl$parseQuery = function (str) {
+	return _elm_lang$core$Dict$fromList(
+		_sporto$erl$Erl$queryTuples(str));
+};
+var _sporto$erl$Erl$extractQuery = function (str) {
+	return A2(
+		_elm_lang$core$Maybe$withDefault,
+		'',
+		_elm_lang$core$List$head(
+			A2(
+				_elm_lang$core$String$split,
+				'#',
+				A2(
+					_elm_lang$core$Maybe$withDefault,
+					'',
+					_elm_lang$core$List$head(
+						A2(
+							_elm_lang$core$List$drop,
+							1,
+							A2(_elm_lang$core$String$split, '?', str)))))));
+};
+var _sporto$erl$Erl$queryFromAll = function (all) {
+	return _sporto$erl$Erl$parseQuery(
+		_sporto$erl$Erl$extractQuery(all));
+};
+var _sporto$erl$Erl$extractHash = function (str) {
+	return A2(
+		_elm_lang$core$Maybe$withDefault,
+		'',
+		_elm_lang$core$List$head(
+			A2(
+				_elm_lang$core$List$drop,
+				1,
+				A2(_elm_lang$core$String$split, '#', str))));
+};
+var _sporto$erl$Erl$hashFromAll = function (str) {
+	return _sporto$erl$Erl$extractHash(str);
+};
+var _sporto$erl$Erl$parseHost = function (str) {
+	return A2(_elm_lang$core$String$split, '.', str);
+};
+var _sporto$erl$Erl$extractProtocol = function (str) {
+	var parts = A2(_elm_lang$core$String$split, '://', str);
+	var _p6 = _elm_lang$core$List$length(parts);
+	if (_p6 === 1) {
+		return '';
+	} else {
+		return A2(
+			_elm_lang$core$Maybe$withDefault,
+			'',
+			_elm_lang$core$List$head(parts));
+	}
+};
+var _sporto$erl$Erl$extractPort = function (str) {
+	var rx = _elm_lang$core$Regex$regex(':\\d+');
+	var res = A3(
+		_elm_lang$core$Regex$find,
+		_elm_lang$core$Regex$AtMost(1),
+		rx,
+		str);
+	return function (result) {
+		var _p7 = result;
+		if (_p7.ctor === 'Ok') {
+			return _p7._0;
+		} else {
+			var _p8 = _sporto$erl$Erl$extractProtocol(str);
+			switch (_p8) {
+				case 'http':
+					return 80;
+				case 'https':
+					return 443;
+				case 'ftp':
+					return 21;
+				case 'sftp':
+					return 22;
+				default:
+					return 0;
+			}
+		}
+	}(
+		_elm_lang$core$String$toInt(
+			A2(
+				_elm_lang$core$String$dropLeft,
+				1,
+				A2(
+					_elm_lang$core$Maybe$withDefault,
+					'',
+					_elm_lang$core$List$head(
+						A2(
+							_elm_lang$core$List$map,
+							function (_) {
+								return _.match;
+							},
+							res))))));
+};
+var _sporto$erl$Erl$leftFrom = F2(
+	function (delimiter, str) {
+		var parts = A2(_elm_lang$core$String$split, delimiter, str);
+		var head = _elm_lang$core$List$head(parts);
+		var _p9 = _elm_lang$core$List$length(parts);
+		switch (_p9) {
+			case 0:
+				return '';
+			case 1:
+				return '';
+			default:
+				return A2(_elm_lang$core$Maybe$withDefault, '', head);
+		}
+	});
+var _sporto$erl$Erl$leftFromOrSame = F2(
+	function (delimiter, str) {
+		var parts = A2(_elm_lang$core$String$split, delimiter, str);
+		return A2(
+			_elm_lang$core$Maybe$withDefault,
+			'',
+			_elm_lang$core$List$head(parts));
+	});
+var _sporto$erl$Erl$rightFromOrSame = F2(
+	function (delimiter, str) {
+		var parts = A2(_elm_lang$core$String$split, delimiter, str);
+		return A2(
+			_elm_lang$core$Maybe$withDefault,
+			'',
+			_elm_lang$core$List$head(
+				_elm_lang$core$List$reverse(parts)));
+	});
+var _sporto$erl$Erl$extractHost = function (str) {
+	var localhostRx = 'localhost';
+	var dotsRx = '((\\w|-)+\\.)+(\\w|-)+';
+	var rx = A2(
+		_elm_lang$core$Basics_ops['++'],
+		'(',
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			dotsRx,
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				'|',
+				A2(_elm_lang$core$Basics_ops['++'], localhostRx, ')'))));
+	return A2(
+		_elm_lang$core$Maybe$withDefault,
+		'',
+		_elm_lang$core$List$head(
+			A2(
+				_elm_lang$core$List$map,
+				function (_) {
+					return _.match;
+				},
+				A3(
+					_elm_lang$core$Regex$find,
+					_elm_lang$core$Regex$AtMost(1),
+					_elm_lang$core$Regex$regex(rx),
+					A2(
+						_sporto$erl$Erl$leftFromOrSame,
+						'/',
+						A2(_sporto$erl$Erl$rightFromOrSame, '//', str))))));
+};
+var _sporto$erl$Erl$host = function (str) {
+	return _sporto$erl$Erl$parseHost(
+		_sporto$erl$Erl$extractHost(str));
+};
+var _sporto$erl$Erl$extractPath = function (str) {
+	var host = _sporto$erl$Erl$extractHost(str);
+	return A4(
+		_elm_lang$core$Regex$replace,
+		_elm_lang$core$Regex$AtMost(1),
+		_elm_lang$core$Regex$regex(':\\d+'),
+		function (_p10) {
+			return '';
+		},
+		A4(
+			_elm_lang$core$Regex$replace,
+			_elm_lang$core$Regex$AtMost(1),
+			_elm_lang$core$Regex$regex(host),
+			function (_p11) {
+				return '';
+			},
+			A2(
+				_sporto$erl$Erl$leftFromOrSame,
+				'#',
+				A2(
+					_sporto$erl$Erl$leftFromOrSame,
+					'?',
+					A2(_sporto$erl$Erl$rightFromOrSame, '//', str)))));
+};
+var _sporto$erl$Erl$hasLeadingSlashFromAll = function (str) {
+	return A2(
+		_elm_lang$core$Regex$contains,
+		_elm_lang$core$Regex$regex('^/'),
+		_sporto$erl$Erl$extractPath(str));
+};
+var _sporto$erl$Erl$hasTrailingSlashFromAll = function (str) {
+	return A2(
+		_elm_lang$core$Regex$contains,
+		_elm_lang$core$Regex$regex('/$'),
+		_sporto$erl$Erl$extractPath(str));
+};
+var _sporto$erl$Erl$rightFrom = F2(
+	function (delimiter, str) {
+		var parts = A2(_elm_lang$core$String$split, delimiter, str);
+		var _p12 = _elm_lang$core$List$length(parts);
+		switch (_p12) {
+			case 0:
+				return '';
+			case 1:
+				return '';
+			default:
+				return A2(
+					_elm_lang$core$Maybe$withDefault,
+					'',
+					_elm_lang$core$List$head(
+						_elm_lang$core$List$reverse(parts)));
+		}
+	});
+var _sporto$erl$Erl$notEmpty = function (str) {
+	return !_elm_lang$core$String$isEmpty(str);
+};
+var _sporto$erl$Erl$parsePath = function (str) {
+	return A2(
+		_elm_lang$core$List$map,
+		_elm_lang$core$Maybe$withDefault(''),
+		A2(
+			_elm_lang$core$List$map,
+			_elm_lang$http$Http$decodeUri,
+			A2(
+				_elm_lang$core$List$filter,
+				_sporto$erl$Erl$notEmpty,
+				A2(_elm_lang$core$String$split, '/', str))));
+};
+var _sporto$erl$Erl$pathFromAll = function (str) {
+	return _sporto$erl$Erl$parsePath(
+		_sporto$erl$Erl$extractPath(str));
+};
+var _sporto$erl$Erl$parse = function (str) {
+	return {
+		host: _sporto$erl$Erl$host(str),
+		hash: _sporto$erl$Erl$hashFromAll(str),
+		password: '',
+		path: _sporto$erl$Erl$pathFromAll(str),
+		hasLeadingSlash: _sporto$erl$Erl$hasLeadingSlashFromAll(str),
+		hasTrailingSlash: _sporto$erl$Erl$hasTrailingSlashFromAll(str),
+		port_: _sporto$erl$Erl$extractPort(str),
+		protocol: _sporto$erl$Erl$extractProtocol(str),
+		query: _sporto$erl$Erl$queryFromAll(str),
+		username: ''
+	};
+};
+var _sporto$erl$Erl$Url = function (a) {
+	return function (b) {
+		return function (c) {
+			return function (d) {
+				return function (e) {
+					return function (f) {
+						return function (g) {
+							return function (h) {
+								return function (i) {
+									return function (j) {
+										return {protocol: a, username: b, password: c, host: d, port_: e, path: f, hasLeadingSlash: g, hasTrailingSlash: h, hash: i, query: j};
+									};
+								};
+							};
+						};
+					};
+				};
+			};
+		};
+	};
+};
+
+var _pzingg$elm_navigation_extra$Navigation_Router$url2path = function (url) {
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		'/',
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			A2(_elm_lang$core$String$join, '/', url.path),
+			(url.hasTrailingSlash && (!_elm_lang$core$List$isEmpty(url.path))) ? '/' : ''));
+};
+var _pzingg$elm_navigation_extra$Navigation_Router$eqUrl = F2(
+	function (u1, u2) {
+		return _elm_lang$core$Native_Utils.eq(u1.path, u2.path) && (_elm_lang$core$Native_Utils.eq(u1.hasTrailingSlash, u2.hasTrailingSlash) && (_elm_lang$core$Native_Utils.eq(u1.hash, u2.hash) && _elm_lang$core$Native_Utils.eq(
+			_elm_lang$core$Dict$toList(u1.query),
+			_elm_lang$core$Dict$toList(u2.query))));
+	});
+var _pzingg$elm_navigation_extra$Navigation_Router$checkDistinctUrl = F2(
+	function (old, $new) {
+		return A2(
+			_pzingg$elm_navigation_extra$Navigation_Router$eqUrl,
+			_sporto$erl$Erl$parse($new.url),
+			old) ? _elm_lang$core$Maybe$Nothing : _elm_lang$core$Maybe$Just($new);
+	});
+var _pzingg$elm_navigation_extra$Navigation_Router$mapUrl = F2(
+	function (func, c1) {
+		return _elm_lang$core$Native_Utils.update(
+			c1,
+			{
+				url: func(c1.url)
+			});
+	});
+var _pzingg$elm_navigation_extra$Navigation_Router$normalizeUrl = F2(
+	function (old, change) {
+		return A2(
+			_pzingg$elm_navigation_extra$Navigation_Router$mapUrl,
+			A2(_elm_lang$core$String$startsWith, '?', change.url) ? function (url) {
+				return A2(
+					_elm_lang$core$Basics_ops['++'],
+					_pzingg$elm_navigation_extra$Navigation_Router$url2path(old),
+					url);
+			} : (A2(_elm_lang$core$String$startsWith, '#', change.url) ? function (url) {
+				return A2(
+					_elm_lang$core$Basics_ops['++'],
+					_pzingg$elm_navigation_extra$Navigation_Router$url2path(old),
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						_sporto$erl$Erl$queryToString(old),
+						url));
+			} : function (url) {
+				return url;
+			}),
+			change);
+	});
+var _pzingg$elm_navigation_extra$Navigation_Router$urlChange2Cmd = function (change) {
+	return function () {
+		var _p0 = change.entry;
+		if (_p0.ctor === 'NewEntry') {
+			return _elm_lang$navigation$Navigation$newUrl;
+		} else {
+			return _elm_lang$navigation$Navigation$modifyUrl;
+		}
+	}()(change.url);
+};
+var _pzingg$elm_navigation_extra$Navigation_Router$urlChanged = F2(
+	function (model, urlChange) {
+		var maybeUrlChange = A2(
+			_elm_lang$core$Maybe$andThen,
+			_pzingg$elm_navigation_extra$Navigation_Router$checkDistinctUrl(model.reportedUrl),
+			A2(
+				_elm_lang$core$Maybe$map,
+				_pzingg$elm_navigation_extra$Navigation_Router$normalizeUrl(model.reportedUrl),
+				urlChange));
+		var _p1 = maybeUrlChange;
+		if (_p1.ctor === 'Just') {
+			var _p2 = _p1._0;
+			return {
+				ctor: '_Tuple2',
+				_0: {
+					reportedUrl: _sporto$erl$Erl$parse(_p2.url),
+					expectedUrlUpdates: model.expectedUrlUpdates + 1
+				},
+				_1: _pzingg$elm_navigation_extra$Navigation_Router$urlChange2Cmd(_p2)
+			};
+		} else {
+			return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+		}
+	});
+var _pzingg$elm_navigation_extra$Navigation_Router$processLocation = F6(
+	function (external, update, location2messages, location, model, commands) {
+		if (external) {
+			var step = F2(
+				function (msg, _p3) {
+					var _p4 = _p3;
+					var _p5 = A2(update, msg, _p4._0);
+					return {
+						ctor: '_Tuple2',
+						_0: _p5._0,
+						_1: {ctor: '::', _0: _p5._1, _1: _p4._1}
+					};
+				});
+			var _p6 = A3(
+				_elm_lang$core$List$foldl,
+				step,
+				{
+					ctor: '_Tuple2',
+					_0: model,
+					_1: {ctor: '[]'}
+				},
+				location2messages(location));
+			var newModel = _p6._0;
+			var moreCommands = _p6._1;
+			return A2(
+				_elm_lang$core$Platform_Cmd_ops['!'],
+				newModel,
+				A2(_elm_lang$core$Basics_ops['++'], commands, moreCommands));
+		} else {
+			return A2(_elm_lang$core$Platform_Cmd_ops['!'], model, commands);
+		}
+	});
+var _pzingg$elm_navigation_extra$Navigation_Router$locationChanged = F2(
+	function (model, location) {
+		var _p7 = (_elm_lang$core$Native_Utils.cmp(model.expectedUrlUpdates, 0) > 0) ? {ctor: '_Tuple2', _0: model.expectedUrlUpdates - 1, _1: false} : {ctor: '_Tuple2', _0: 0, _1: true};
+		var nextUpdates = _p7._0;
+		var external = _p7._1;
+		var newModel = {
+			reportedUrl: _sporto$erl$Erl$parse(location.href),
+			expectedUrlUpdates: nextUpdates
+		};
+		return {ctor: '_Tuple2', _0: newModel, _1: external};
+	});
+var _pzingg$elm_navigation_extra$Navigation_Router$init = function (location) {
+	return {
+		reportedUrl: _sporto$erl$Erl$parse(location.href),
+		expectedUrlUpdates: 0
+	};
+};
+var _pzingg$elm_navigation_extra$Navigation_Router$UrlChange = F2(
+	function (a, b) {
+		return {entry: a, url: b};
+	});
+var _pzingg$elm_navigation_extra$Navigation_Router$Model = F2(
+	function (a, b) {
+		return {reportedUrl: a, expectedUrlUpdates: b};
+	});
+var _pzingg$elm_navigation_extra$Navigation_Router$ModifyEntry = {ctor: 'ModifyEntry'};
+var _pzingg$elm_navigation_extra$Navigation_Router$NewEntry = {ctor: 'NewEntry'};
+
+var _pzingg$elm_navigation_extra$Navigation_Builder$toChange = F2(
+	function (stuffIntoHash, _p0) {
+		var _p1 = _p0;
+		var _p2 = _p1._0;
+		var hashPrefix = stuffIntoHash ? '$' : '#';
+		var formattedHash = _elm_lang$core$Native_Utils.eq(_p2.hash, '') ? '' : A2(
+			_elm_lang$core$Basics_ops['++'],
+			hashPrefix,
+			_elm_lang$http$Http$encodeUri(_p2.hash));
+		var eachQuery = F3(
+			function (key, value, memo) {
+				return {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$core$Basics_ops['++'],
+						_elm_lang$http$Http$encodeUri(key),
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'=',
+							_elm_lang$http$Http$encodeUri(value))),
+					_1: memo
+				};
+			});
+		var joinedPath = A2(
+			_elm_lang$core$String$join,
+			'/',
+			A2(_elm_lang$core$List$map, _elm_lang$http$Http$encodeUri, _p2.path));
+		var queryPrefix = stuffIntoHash ? '^' : '?';
+		var joinedQuery = _elm_lang$core$Dict$isEmpty(_p2.query) ? '' : A2(
+			_elm_lang$core$Basics_ops['++'],
+			queryPrefix,
+			A2(
+				_elm_lang$core$String$join,
+				'&',
+				A3(
+					_elm_lang$core$Dict$foldl,
+					eachQuery,
+					{ctor: '[]'},
+					_p2.query)));
+		var prefix = stuffIntoHash ? '#!/' : '/';
+		return {
+			entry: _p2.entry,
+			url: A2(
+				_elm_lang$core$Basics_ops['++'],
+				prefix,
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					joinedPath,
+					A2(_elm_lang$core$Basics_ops['++'], joinedQuery, formattedHash)))
+		};
+	});
+var _pzingg$elm_navigation_extra$Navigation_Builder$toUrlChange = _pzingg$elm_navigation_extra$Navigation_Builder$toChange(false);
+var _pzingg$elm_navigation_extra$Navigation_Builder$toHashChange = _pzingg$elm_navigation_extra$Navigation_Builder$toChange(true);
+var _pzingg$elm_navigation_extra$Navigation_Builder$hash = function (_p3) {
+	var _p4 = _p3;
+	return _p4._0.hash;
+};
+var _pzingg$elm_navigation_extra$Navigation_Builder$getQuery = F2(
+	function (key, _p5) {
+		var _p6 = _p5;
+		return A2(_elm_lang$core$Dict$get, key, _p6._0.query);
+	});
+var _pzingg$elm_navigation_extra$Navigation_Builder$query = function (_p7) {
+	var _p8 = _p7;
+	return _p8._0.query;
+};
+var _pzingg$elm_navigation_extra$Navigation_Builder$path = function (_p9) {
+	var _p10 = _p9;
+	return _p10._0.path;
+};
+var _pzingg$elm_navigation_extra$Navigation_Builder$entry = function (_p11) {
+	var _p12 = _p11;
+	return _p12._0.entry;
+};
+var _pzingg$elm_navigation_extra$Navigation_Builder$Builder = function (a) {
+	return {ctor: 'Builder', _0: a};
+};
+var _pzingg$elm_navigation_extra$Navigation_Builder$builder = _pzingg$elm_navigation_extra$Navigation_Builder$Builder(
+	{
+		entry: _pzingg$elm_navigation_extra$Navigation_Router$NewEntry,
+		path: {ctor: '[]'},
+		query: _elm_lang$core$Dict$empty,
+		hash: ''
+	});
+var _pzingg$elm_navigation_extra$Navigation_Builder$newEntry = function (_p13) {
+	var _p14 = _p13;
+	return _pzingg$elm_navigation_extra$Navigation_Builder$Builder(
+		_elm_lang$core$Native_Utils.update(
+			_p14._0,
+			{entry: _pzingg$elm_navigation_extra$Navigation_Router$NewEntry}));
+};
+var _pzingg$elm_navigation_extra$Navigation_Builder$modifyEntry = function (_p15) {
+	var _p16 = _p15;
+	return _pzingg$elm_navigation_extra$Navigation_Builder$Builder(
+		_elm_lang$core$Native_Utils.update(
+			_p16._0,
+			{entry: _pzingg$elm_navigation_extra$Navigation_Router$ModifyEntry}));
+};
+var _pzingg$elm_navigation_extra$Navigation_Builder$modifyPath = F2(
+	function (func, _p17) {
+		var _p18 = _p17;
+		var _p19 = _p18._0;
+		return _pzingg$elm_navigation_extra$Navigation_Builder$Builder(
+			_elm_lang$core$Native_Utils.update(
+				_p19,
+				{
+					path: func(_p19.path)
+				}));
+	});
+var _pzingg$elm_navigation_extra$Navigation_Builder$prependToPath = function (_p20) {
+	return _pzingg$elm_navigation_extra$Navigation_Builder$modifyPath(
+		_elm_lang$core$List$append(_p20));
+};
+var _pzingg$elm_navigation_extra$Navigation_Builder$appendToPath = function (_p21) {
+	return _pzingg$elm_navigation_extra$Navigation_Builder$modifyPath(
+		A2(_elm_lang$core$Basics$flip, _elm_lang$core$List$append, _p21));
+};
+var _pzingg$elm_navigation_extra$Navigation_Builder$replacePath = F2(
+	function (list, _p22) {
+		var _p23 = _p22;
+		return _pzingg$elm_navigation_extra$Navigation_Builder$Builder(
+			_elm_lang$core$Native_Utils.update(
+				_p23._0,
+				{path: list}));
+	});
+var _pzingg$elm_navigation_extra$Navigation_Builder$modifyQuery = F2(
+	function (func, _p24) {
+		var _p25 = _p24;
+		var _p26 = _p25._0;
+		return _pzingg$elm_navigation_extra$Navigation_Builder$Builder(
+			_elm_lang$core$Native_Utils.update(
+				_p26,
+				{
+					query: func(_p26.query)
+				}));
+	});
+var _pzingg$elm_navigation_extra$Navigation_Builder$insertQuery = F2(
+	function (key, value) {
+		return _pzingg$elm_navigation_extra$Navigation_Builder$modifyQuery(
+			A2(_elm_lang$core$Dict$insert, key, value));
+	});
+var _pzingg$elm_navigation_extra$Navigation_Builder$updateQuery = F2(
+	function (key, func) {
+		return _pzingg$elm_navigation_extra$Navigation_Builder$modifyQuery(
+			A2(_elm_lang$core$Dict$update, key, func));
+	});
+var _pzingg$elm_navigation_extra$Navigation_Builder$removeQuery = function (_p27) {
+	return _pzingg$elm_navigation_extra$Navigation_Builder$modifyQuery(
+		_elm_lang$core$Dict$remove(_p27));
+};
+var _pzingg$elm_navigation_extra$Navigation_Builder$replaceQuery = F2(
+	function (query, _p28) {
+		var _p29 = _p28;
+		return _pzingg$elm_navigation_extra$Navigation_Builder$Builder(
+			_elm_lang$core$Native_Utils.update(
+				_p29._0,
+				{query: query}));
+	});
+var _pzingg$elm_navigation_extra$Navigation_Builder$modifyHash = F2(
+	function (func, _p30) {
+		var _p31 = _p30;
+		var _p32 = _p31._0;
+		return _pzingg$elm_navigation_extra$Navigation_Builder$Builder(
+			_elm_lang$core$Native_Utils.update(
+				_p32,
+				{
+					hash: func(_p32.hash)
+				}));
+	});
+var _pzingg$elm_navigation_extra$Navigation_Builder$replaceHash = F2(
+	function (hash, _p33) {
+		var _p34 = _p33;
+		return _pzingg$elm_navigation_extra$Navigation_Builder$Builder(
+			_elm_lang$core$Native_Utils.update(
+				_p34._0,
+				{hash: hash}));
+	});
+var _pzingg$elm_navigation_extra$Navigation_Builder$fromUrl = function (url) {
+	var erl = _sporto$erl$Erl$parse(url);
+	return _pzingg$elm_navigation_extra$Navigation_Builder$Builder(
+		{
+			entry: _pzingg$elm_navigation_extra$Navigation_Router$NewEntry,
+			path: erl.path,
+			query: erl.query,
+			hash: A2(
+				_elm_lang$core$Maybe$withDefault,
+				'',
+				_elm_lang$http$Http$decodeUri(erl.hash))
+		});
+};
+var _pzingg$elm_navigation_extra$Navigation_Builder$fromHash = function (url) {
+	var unwrapped = _sporto$erl$Erl$parse(
+		A4(
+			_elm_lang$core$Regex$replace,
+			_elm_lang$core$Regex$AtMost(1),
+			_elm_lang$core$Regex$regex('\\^'),
+			_elm_lang$core$Basics$always('?'),
+			A4(
+				_elm_lang$core$Regex$replace,
+				_elm_lang$core$Regex$AtMost(1),
+				_elm_lang$core$Regex$regex('$'),
+				_elm_lang$core$Basics$always('#'),
+				A4(
+					_elm_lang$core$Regex$replace,
+					_elm_lang$core$Regex$AtMost(1),
+					_elm_lang$core$Regex$regex('^!'),
+					_elm_lang$core$Basics$always(''),
+					function (_) {
+						return _.hash;
+					}(
+						_sporto$erl$Erl$parse(url))))));
+	return _pzingg$elm_navigation_extra$Navigation_Builder$Builder(
+		{entry: _pzingg$elm_navigation_extra$Navigation_Router$NewEntry, path: unwrapped.path, query: unwrapped.query, hash: unwrapped.hash});
+};
+
 var _user$project$Models$getSpotify = F3(
 	function (url, token, decoder) {
 		return _elm_lang$http$Http$request(
@@ -10439,13 +11236,30 @@ var _user$project$Views$view = function (model) {
 		});
 };
 
-var _user$project$Routing$getCommandForRoute = F2(
-	function (route, token) {
-		var _p0 = route;
-		if (_p0.ctor === 'NotFoundRoute') {
+var _user$project$Routing$resetQuery = function () {
+	var pathBuilder = A2(_pzingg$elm_navigation_extra$Navigation_Builder$replaceQuery, _elm_lang$core$Dict$empty, _pzingg$elm_navigation_extra$Navigation_Builder$builder);
+	return _elm_lang$core$Maybe$Just(
+		_pzingg$elm_navigation_extra$Navigation_Builder$toUrlChange(pathBuilder));
+}();
+var _user$project$Routing$getCommandForRoute = F3(
+	function (location, route, token) {
+		var model = _pzingg$elm_navigation_extra$Navigation_Router$init(location);
+		var _p0 = A2(_pzingg$elm_navigation_extra$Navigation_Router$urlChanged, model, _user$project$Routing$resetQuery);
+		var urlChangeCmd = _p0._1;
+		var _p1 = route;
+		if (_p1.ctor === 'NotFoundRoute') {
 			return _elm_lang$core$Platform_Cmd$none;
 		} else {
-			return _elm_lang$core$String$isEmpty(token) ? _elm_lang$core$Platform_Cmd$none : _user$project$Models$getBestAlbums;
+			return _elm_lang$core$String$isEmpty(token) ? _elm_lang$core$Platform_Cmd$none : _elm_lang$core$Platform_Cmd$batch(
+				{
+					ctor: '::',
+					_0: _user$project$Models$getBestAlbums,
+					_1: {
+						ctor: '::',
+						_0: urlChangeCmd,
+						_1: {ctor: '[]'}
+					}
+				});
 		}
 	});
 var _user$project$Routing$parseToken = function (location) {
@@ -10455,13 +11269,13 @@ var _user$project$Routing$parseToken = function (location) {
 		_elm_lang$core$Regex$regex('.+?#access_token=(.+?)&.+'),
 		location.href);
 	var possibleTokenMatch = _elm_lang$core$List$head(matches);
-	var _p1 = possibleTokenMatch;
-	if (_p1.ctor === 'Just') {
-		var _p2 = _elm_lang$core$List$head(_p1._0.submatches);
-		if (_p2.ctor === 'Just') {
-			var _p3 = _p2._0;
-			if (_p3.ctor === 'Just') {
-				return _p3._0;
+	var _p2 = possibleTokenMatch;
+	if (_p2.ctor === 'Just') {
+		var _p3 = _elm_lang$core$List$head(_p2._0.submatches);
+		if (_p3.ctor === 'Just') {
+			var _p4 = _p3._0;
+			if (_p4.ctor === 'Just') {
+				return _p4._0;
 			} else {
 				return '';
 			}
@@ -10494,9 +11308,9 @@ var _user$project$Routing$matchersPath = _evancz$url_parser$UrlParser$oneOf(
 	});
 var _user$project$Routing$parseLocation = function (location) {
 	var token = _user$project$Routing$parseToken(location);
-	var _p4 = A2(_evancz$url_parser$UrlParser$parsePath, _user$project$Routing$matchersPath, location);
-	if (_p4.ctor === 'Just') {
-		return {ctor: '_Tuple2', _0: _p4._0, _1: token};
+	var _p5 = A2(_evancz$url_parser$UrlParser$parsePath, _user$project$Routing$matchersPath, location);
+	if (_p5.ctor === 'Just') {
+		return {ctor: '_Tuple2', _0: _p5._0, _1: token};
 	} else {
 		return {ctor: '_Tuple2', _0: _user$project$Models$NotFoundRoute, _1: token};
 	}
@@ -10512,31 +11326,31 @@ var _user$project$Main$update = F2(
 			case 'Refresh':
 				return {ctor: '_Tuple2', _0: model, _1: _user$project$Models$authenticate};
 			case 'OnLocationChange':
-				var _p1 = _user$project$Routing$parseLocation(_p0._0);
+				var _p2 = _p0._0;
+				var oldToken = model.token;
+				var _p1 = _user$project$Routing$parseLocation(_p2);
 				var newRoute = _p1._0;
 				var newToken = _p1._1;
-				var cmd = A2(_user$project$Routing$getCommandForRoute, newRoute, newToken);
+				var token = _elm_lang$core$String$isEmpty(newToken) ? oldToken : newToken;
+				var cmd = A3(_user$project$Routing$getCommandForRoute, _p2, newRoute, token);
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{
-							route: newRoute,
-							token: A2(_elm_lang$core$Debug$log, 'token', newToken)
-						}),
+						{route: newRoute, token: token}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'Authenticate':
 				return {ctor: '_Tuple2', _0: model, _1: _user$project$Models$authenticate};
 			case 'NewBestAlbums':
 				if (_p0._0.ctor === 'Ok') {
-					var _p2 = _p0._0._0;
+					var _p3 = _p0._0._0;
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{route: _user$project$Models$ListRoute, reviews: _p2}),
-						_1: A2(_user$project$Models$getSpotifyAlbums, _p2, model.token)
+							{route: _user$project$Models$ListRoute, reviews: _p3}),
+						_1: A2(_user$project$Models$getSpotifyAlbums, _p3, model.token)
 					};
 				} else {
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
@@ -10567,13 +11381,13 @@ var _user$project$Main$update = F2(
 		}
 	});
 var _user$project$Main$init = function (location) {
-	var _p3 = _user$project$Routing$parseLocation(location);
-	var currentRoute = _p3._0;
-	var token = _p3._1;
+	var _p4 = _user$project$Routing$parseLocation(location);
+	var currentRoute = _p4._0;
+	var token = _p4._1;
 	return {
 		ctor: '_Tuple2',
 		_0: A2(_user$project$Models$initialModel, currentRoute, token),
-		_1: A2(_user$project$Routing$getCommandForRoute, currentRoute, token)
+		_1: A3(_user$project$Routing$getCommandForRoute, location, currentRoute, token)
 	};
 };
 var _user$project$Main$main = A2(
