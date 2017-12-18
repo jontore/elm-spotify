@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": ">=7.6"
+  }
   "scripts": {
     "start": "node --harmony srv/index.js",
     "dev": "./node_modules/.bin/elm-live src/Main.elm --pushstate",
