@@ -21,10 +21,10 @@ getBestNewAlbums = function * (next) {
     var reviewObjs = reviewEls.map(function(i, reviewEl) {
       var reviewEl$ = $(reviewEl);
       return {
-        url: reviewEl$.find('.album-link').attr('href'),
-        image: reviewEl$.find('.album-link img').attr('src'),
-        artist: reviewEl$.find('.album-artist .artist-list').text(),
-        album: reviewEl$.find('.review .album-artist .title').text()
+        url: reviewEl$.find('.review__link').attr('href'),
+        image: reviewEl$.find('.review__artwork img').attr('src'),
+        artist: reviewEl$.find('.artist-list.review__title-artist').text(),
+        album: reviewEl$.find('.review__title-album').text()
       }
     }).get();
     this.body = reviewObjs;
