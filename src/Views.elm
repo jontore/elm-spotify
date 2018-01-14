@@ -18,7 +18,7 @@ renderAlbum album = li [ class "album" ] [
         , text album.album
     ]
     , p [] [
-        a [ href album.open, class "album-open"] [ text "Open"]
+        a [ href album.open, class "album-open", target "_blank"] [ text "Open"]
     ]
   ]
 
@@ -34,7 +34,7 @@ header: Model -> Html Msg
 header model =
     h1 [ class "title"] [
       text "Best new albums from "
-      , a [href "http://pitchfork.com/reviews/best/albums/"] [ text "Pitchfork" ]
+      , a [href "http://pitchfork.com/reviews/best/albums/", target "_blank"] [ text "Pitchfork" ]
     ]
 
 page: Model -> Html Msg
